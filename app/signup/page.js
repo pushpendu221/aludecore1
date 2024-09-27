@@ -1,33 +1,61 @@
+"use client";
+import { wpSignUp } from "@/actions/auth-actions";
 import classes from "./signup.module.css";
+import { useFormState } from "react-dom";
+import { Suspense } from "react";
+
 export default function Signup() {
+  const [state, action] = useFormState(wpSignUp, {});
+
   return (
     <div className={classes.mainbody}>
       <div className={classes.form_container}>
         <h1>Sign Up</h1>
-        <form id="signup-form" novalidate>
+        <form id="signup-form" action={action}>
           <div className={classes.form_group}>
-            <label for="email">Email:</label>
+            <label htmlFor="email">Email:</label>
             <input type="email" id="email" name="email" required />
-            <div className="error" id="email-error"></div>
+            {state.errors?.email && (
+              <div className={classes.error} id="email-error">
+                {state.errors.email}
+              </div>
+            )}
           </div>
           <div className={classes.form_group}>
-            <label for="firstname">First Name:</label>
-            <input type="text" id="firstname" name="firstname" required />
-            <div className="error" id="firstname-error"></div>
+            <label htmlFor="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstName" />
+            {state.errors?.firstName && (
+              <div className={classes.error} id="firstName-error">
+                {state.errors.firstName}
+              </div>
+            )}
           </div>
           <div className={classes.form_group}>
-            <label for="lastname">Last Name:</label>
-            <input type="text" id="lastname" name="lastname" required />
+            <label htmlFor="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastName" required />
             <div className="error" id="lastname-error"></div>
           </div>
           <div className={classes.form_group}>
-            <label for="password">Password:</label>
+            <label htmlFor="password">Password:</label>
             <input type="password" id="password" name="password" required />
-            <div className="error" id="password-error"></div>
+            {state.errors?.password && (
+              <div className={classes.error} id="password-error">
+                {state.errors.password}
+              </div>
+            )}
           </div>
-          <button className={classes.signup} type="submit">
-            Sign Up
-          </button>
+          {state.errors && (
+            <div className={classes.error} id="message-error">
+              {Object.keys(state.errors).map((error) => (
+                <li key={error}>{state.errors[error]}</li>
+              ))}
+            </div>
+          )}
+          <Suspense fallback="loading....">
+            <button className={classes.signup} type="submit">
+              Sign Up
+            </button>
+          </Suspense>
         </form>
       </div>
     </div>
