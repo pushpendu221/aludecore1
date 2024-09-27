@@ -2,10 +2,9 @@
 import { wpSignUp } from "@/actions/auth-actions";
 import classes from "./signup.module.css";
 import { useFormState } from "react-dom";
-import { Suspense } from "react";
 
 export default function Signup() {
-  const [state, action] = useFormState(wpSignUp, {});
+  const [state, action, pending] = useFormState(wpSignUp, {});
 
   return (
     <div className={classes.mainbody}>
@@ -51,11 +50,9 @@ export default function Signup() {
               ))}
             </div>
           )}
-          <Suspense fallback="loading....">
-            <button className={classes.signup} type="submit">
-              Sign Up
-            </button>
-          </Suspense>
+          <button className={classes.signup} type="submit" disabled={pending}>
+            {pending ? "Loading...." : "Sign Up"}
+          </button>
         </form>
       </div>
     </div>

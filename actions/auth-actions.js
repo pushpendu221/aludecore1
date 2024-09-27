@@ -45,11 +45,20 @@ export async function wpSignUp(state, formData) {
     );
     const result = await response.json();
     console.log(result);
+    if (result.ok) {
+      console.log("result");
+      // Store the token in sessionStorage
+      sessionStorage.setItem("token", result.data.token);
+      // Redirect the user to the dashboard or any protected route
+      router.push("/login");
+    } else {
+      console.error(result.message);
+    }
+  } catch (error) {
     // .then((response) => response.json())
     // .then((data) => console.log(data));
 
     //console.log(result);
-  } catch (error) {
     console.error(error);
   }
 }
