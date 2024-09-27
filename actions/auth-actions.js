@@ -45,7 +45,7 @@ export async function wpSignUp(state, formData) {
     );
     const result = await response.json();
     console.log(result);
-    if (result.ok) {
+    if (result.data.status === 201) {
       console.log("result");
       // Store the token in sessionStorage
       sessionStorage.setItem("token", result.data.token);
