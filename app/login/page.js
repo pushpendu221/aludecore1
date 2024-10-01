@@ -1,7 +1,29 @@
+"use client";
+
+import Auth from "@/lib/auth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Login() {
-  const token = sessionStorage.getItem("token");
+  const router = useRouter();
+  let result = {};
+  async function fetchData() {
+    const token = localStorage.getItem("token");
+    result = await Auth(token);
+    console.log(result);
+    if (result?.success) {
+      // Redirect to the dashboard or any other page
+      router.push("/account");
+    }
+    console.log(result);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
-    <>{token}</>
+    <>Login Page</>
     //   <div className={classes.mainbody}>
     //     <div className={classes.form_container}>
     //       <h1>Sign Up</h1>

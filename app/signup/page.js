@@ -2,10 +2,26 @@
 import { wpSignUp } from "@/actions/auth-actions";
 import classes from "./signup.module.css";
 import { useFormState } from "react-dom";
-
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 export default function Signup() {
-  const [state, action, pending] = useFormState(wpSignUp, {});
+  const initialState = {
+    errors: {},
+    success: false,
+    result: null,
+    resError: null,
+  };
+  const [state, action] = useFormState(wpSignUp, initialState);
+  const router = useRouter();
+  useEffect(() => {
+    if (state.success && state.result) {
+      // Store the token in localStorage
+      localStorage.setItem("token", state.result.token);
 
+      // Redirect to the dashboard or any other page
+      router.push("/account");
+    }
+  }, [state.success, state.result, router]);
   return (
     <div className={classes.mainbody}>
       <div className={classes.form_container}>
@@ -43,16 +59,15 @@ export default function Signup() {
               </div>
             )}
           </div>
-          {state.errors && (
+          {state?.resError && (
             <div className={classes.error} id="message-error">
-              {Object.keys(state.errors).map((error) => (
-                <li key={error}>{state.errors[error]}</li>
-              ))}
+              {state.resError}
             </div>
           )}
-          <button className={classes.signup} type="submit" disabled={pending}>
-            {pending ? "Loading...." : "Sign Up"}
+          <button className={classes.signup} type="submit">
+            Sign Up
           </button>
+          {state.resError && <p className="error">{state.resError}</p>}
         </form>
       </div>
     </div>
