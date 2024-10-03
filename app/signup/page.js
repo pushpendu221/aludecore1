@@ -4,6 +4,8 @@ import classes from "./signup.module.css";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Toaster, toast } from "react-hot-toast";
+
 export default function Signup() {
   const initialState = {
     errors: {},
@@ -17,33 +19,32 @@ export default function Signup() {
     if (state.success && state.result) {
       // Store the token in localStorage
       localStorage.setItem("token", state.result.token);
-
+      toast.success("Sign up successful! Redirecting...");
       // Redirect to the dashboard or any other page
       router.push("/account");
     }
-  }, [state.success, state.result, router]);
+    if (state.resError) {
+      toast.error(state.resError);
+    }
+    if (state.errors && Object.keys(state.errors).length > 0) {
+      Object.keys(state.errors).map((error) => {
+        toast.error(state.errors[error]);
+      });
+    }
+  }, [state, router]);
   return (
     <div className={classes.mainbody}>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className={classes.form_container}>
         <h1>Sign Up</h1>
         <form id="signup-form" action={action}>
           <div className={classes.form_group}>
             <label htmlFor="email">Email:</label>
             <input type="email" id="email" name="email" required />
-            {state.errors?.email && (
-              <div className={classes.error} id="email-error">
-                {state.errors.email}
-              </div>
-            )}
           </div>
           <div className={classes.form_group}>
             <label htmlFor="firstname">First Name:</label>
             <input type="text" id="firstname" name="firstName" />
-            {state.errors?.firstName && (
-              <div className={classes.error} id="firstName-error">
-                {state.errors.firstName}
-              </div>
-            )}
           </div>
           <div className={classes.form_group}>
             <label htmlFor="lastname">Last Name:</label>
@@ -53,21 +54,10 @@ export default function Signup() {
           <div className={classes.form_group}>
             <label htmlFor="password">Password:</label>
             <input type="password" id="password" name="password" required />
-            {state.errors?.password && (
-              <div className={classes.error} id="password-error">
-                {state.errors.password}
-              </div>
-            )}
           </div>
-          {state?.resError && (
-            <div className={classes.error} id="message-error">
-              {state.resError}
-            </div>
-          )}
           <button className={classes.signup} type="submit">
             Sign Up
           </button>
-          {state.resError && <p className="error">{state.resError}</p>}
         </form>
       </div>
     </div>
