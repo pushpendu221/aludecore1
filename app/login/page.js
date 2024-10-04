@@ -1,6 +1,6 @@
 "use client";
 
-import Auth from "@/lib/auth";
+import ValidateToken from "@/component/validateToken";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import classes from "../signup/signup.module.css";
@@ -19,13 +19,16 @@ export default function Login() {
   let result = {};
   async function fetchData() {
     const token = localStorage.getItem("token");
-    result = await Auth(token);
-    console.log(result);
+    result = await ValidateToken(token);
+
+    //console.log(result);
     if (result?.success) {
+      console.log("reachedd1!!", result);
       // Redirect to the dashboard or any other page
       router.push("/account");
     }
     if (state.success && state.result) {
+      console.log("reachedd2!!");
       // Store the token in localStorage
       localStorage.setItem("token", state.result.token);
       router.push("/account");
@@ -34,7 +37,7 @@ export default function Login() {
 
   useEffect(() => {
     fetchData();
-  }, [state]);
+  }, [state, router]);
 
   return (
     <div className={classes.mainbody}>

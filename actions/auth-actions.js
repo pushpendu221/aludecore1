@@ -1,4 +1,5 @@
 "use server";
+import Apicall from "@/lib/apicall";
 export async function wpSignUp(state, formData) {
   //1. validate fields
   const firstName = formData.get("firstName");
@@ -26,45 +27,20 @@ export async function wpSignUp(state, formData) {
     };
   }
   //2. Storing in Wp Db
-  try {
-    const response = await fetch(
-      "https://yourcloudnetwork.net/projects/aludecor/wp-json/aludecor/v1/user/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": "eb189995-bc6e-4703-b671-ae41e1c87f60",
-        },
-        body: JSON.stringify({
-          username: email,
-          first_name: firstName,
-          last_name: lastName,
-          password: password,
-        }),
-      }
-    );
-    const result = await response.json();
-    console.log(result);
-    if (response.ok) {
-      console.log("result");
-      return {
-        success: true,
-        result: result.data,
-      };
-      // Store the token in sessionStorage
-      //sessionStorage.setItem("token", result.data.token);
-      // Redirect the user to the dashboard or any protected route
-      //  router.push("/login");
-    } else {
-      return {
-        resError: result.message,
-      };
+  let response = Apicall(
+    "user/register",
+    "POST",
+    {
+      "Content-Type": "application/json",
+      "x-api-key": "eb189995-bc6e-4703-b671-ae41e1c87f60",
+    },
+    {
+      username: email,
+      first_name: firstName,
+      last_name: lastName,
+      password: password,
     }
-  } catch (error) {
-    // .then((response) => response.json())
-    // .then((data) => console.log(data));
+  );
 
-    //console.log(result);
-    console.error(error);
-  }
+  return response;
 }
